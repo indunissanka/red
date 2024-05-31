@@ -187,38 +187,45 @@
             }
         }
 
-        async function submitForm(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const postData = Object.fromEntries(formData.entries());
+       async function submitForm(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const postData = Object.fromEntries(formData.entries());
 
-            // Fetch SKU counts
-            const response = await fetch('https://script.google.com/macros/s/AKfycbxTWRxhz7FMyUNlD8rcvaKSq3x3DFB_JReTEJxUIp00iLg4soNnT1I4KtSOlHpi72AY/exec?sku_check=true');
-            const skuCounts = await response.json();
+    // Fetch SKU counts
+    const response = await fetch('https://script.google.com/macros/s/AKfycbzmjhPfDfKH0X5J0L4d0rKg8tHvGrr3wtk1CLtaZEWSNqYH0K95q0F23cEWGnmu8f0K/exec?sku_check=true');
+    const skuCounts = await response.json();
 
-            // Validate SKU limits
-            const product1Quantity = parseInt(postData.product1_quantity);
-            const product2Quantity = parseInt(postData.product2_quantity);
-            const product3Quantity = parseInt(postData.product3_quantity);
+    // Validate SKU limits
+    const product1Quantity = parseInt(postData.product1_quantity);
+    const product2Quantity = parseInt(postData.product2_quantity);
+    const product3Quantity = parseInt(postData.product3_quantity);
 
-            if ((skuCounts.product1 + product1Quantity > 20) ||
-                (skuCounts.product2 + product2Quantity > 20) ||
-                (skuCounts.product3 + product3Quantity > 20)) {
-                alert('SKU limit exceeded for one or more products.');
-                return;
-            }
+    const requestedDeliveryDate = new Date(postData.delivery_date);
+    const now = new Date();
+    const nextWeek = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
 
-            const result = await fetch('https://script.google.com/macros/s/AKfycbxTWRxhz7FMyUNlD8rcvaKSq3x3DFB_JReTEJxUIp00iLg4soNnT1I4KtSOlHpi72AY/exec', {
-                method: 'POST',
-                body: formData
-            }).then(res => res.text());
-
-            if (result === 'Success') {
-                window.location.href = 'thankyou.html';
-            } else {
-                alert('There was an error with your submission. Please try again.');
-            }
+    if (requestedDeliveryDate <= nextWeek) {
+        if ((skuCounts.product1 + product1Quantity > 20) ||
+            (skuCounts.product2 + product2Quantity > 20) ||
+            (skuCounts.product3 + product3Quantity > 20)) {
+            alert('SKU limit exceeded for this week. Please choose a delivery date for next week.');
+            return;
         }
+    }
+
+    const result = await fetch('https://script.google.com/macros/s/AKfycbzmjhPfDfKH0X5J0L4d0rKg8tHvGrr3wtk1CLtaZEWSNqYH0K95q0F23cEWGnmu8f0K/exec', {
+        method: 'POST',
+        body: formData
+    }).then(res => res.text());
+
+    if (result === 'Success') {
+        window.location.href = 'thankyou.html';
+    } else {
+        alert('There was an error with your submission. Please try again.');
+    }
+}
+
     </script>
 </head>
 <body>
