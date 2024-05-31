@@ -213,7 +213,7 @@
                 grandTotal
             };
 
-            const response = await fetch('https://script.google.com/macros/s/AKfycbzbTlPwQv6vdT2Bg8ZX4j_XTrXAsoCXJllHrLOvveqb_pNuTmoKesYHvBfFFMCZanBi/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzSrFV2uAL0embRCU4CPRah0ZWQivpuyaMRzdOBKn4LhZO-PVt7pb2P0FUkoNFQb77I/exec', {
                 method: 'POST',
                 body: JSON.stringify(formData),
                 headers: {
@@ -223,17 +223,16 @@
 
             const result = await response.json();
             if (result.result === 'success') {
-                alert('Form submitted successfully!');
-                window.location.href = 'thankyou.html'; // Redirect to the thank you page
+                window.location.href = 'thankyou.html';
             } else {
-                alert('There was an error submitting the form.');
+                alert('There was an error with your submission. Please try again.');
             }
         }
     </script>
 </head>
 <body>
     <header>
-        <h1>Reddish Beaker Page</h1>
+        <h1>Reddish Beaker</h1>
     </header>
     <main>
         <div class="content">
